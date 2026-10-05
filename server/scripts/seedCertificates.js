@@ -182,10 +182,10 @@ const CERTIFICATES = [
     // Note: filename has a leading space — stored exactly as on disk
     title: 'Programming Fundamentals',
     category: 'Certificates & Training',
-    issuingOrg: '',   // issuer not visible — update via admin after confirming
-    issueDate: '',    // date not confirmed — update via admin
+    issuingOrg: 'Unknown — please update via admin panel',
+    issueDate: '',
     description:
-      'Certificate of completion in Programming Fundamentals. Details to be confirmed — please update issuer and date via the admin panel after reviewing the original certificate.',
+      'Certificate of completion in Programming Fundamentals. Issuer and date not confirmed — please update via the admin panel after reviewing the original certificate.',
     fileUrl: '/certificates/training/ programming-fundamentals.jpg',
     thumbnailUrl: '/certificates/training/ programming-fundamentals.jpg',
     fileType: 'image',

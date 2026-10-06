@@ -9,17 +9,16 @@ import {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  'Academic',
   'Awards & Recognition',
-  'Certificates & Training',
-  'National Examination',
   'University',
+  'National Examination',
+  'Certificates & Training',
   'Other',
 ];
 
 const EMPTY_FORM = {
   title: '',
-  category: 'Academic',
+  category: 'Awards & Recognition',
   issuingOrg: '',
   issueDate: '',
   description: '',

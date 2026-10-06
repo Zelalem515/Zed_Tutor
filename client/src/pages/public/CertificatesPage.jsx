@@ -262,7 +262,11 @@ export default function CertificatesPage() {
     load();
   }, []);
 
-  const categories = ['All', 'Awards & Recognition', 'Academic', 'University', 'National Examination', 'Certificates & Training', 'Other'];
+  const availableCategories = ['Awards & Recognition', 'University', 'National Examination', 'Certificates & Training', 'Other'];
+  const categories = [
+    'All',
+    ...availableCategories.filter(cat => certificates.some(c => c.category === cat))
+  ];
 
   const filtered = selectedCategory === 'All'
     ? certificates
@@ -292,11 +296,6 @@ export default function CertificatesPage() {
           <div className="inline-flex items-center space-x-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
             <span>Verified Academic Records</span>
-          </div>
-          <span className="text-slate-300 hidden sm:inline">•</span>
-          <div className="inline-flex items-center space-x-1.5">
-            <Download className="w-4 h-4 text-academic-500" />
-            <span>Free Download — No Account Required</span>
           </div>
           <span className="text-slate-300 hidden sm:inline">•</span>
           <div className="inline-flex items-center space-x-1.5">

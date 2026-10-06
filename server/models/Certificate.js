@@ -9,8 +9,8 @@ const certificateSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Academic', 'Awards & Recognition', 'Certificates & Training', 'National Examination', 'University', 'Other'],
-    default: 'Academic'
+    enum: ['Awards & Recognition', 'University', 'National Examination', 'Certificates & Training', 'Academic', 'Other'],
+    default: 'Awards & Recognition'
   },
   issuingOrg: {
     type: String,

@@ -154,8 +154,7 @@ export default function AcademicStatistics({ academic }) {
             </div>
 
             <p className="text-[11px] text-slate-400 italic">
-              Note: Discrete Mathematics received an A grade — not all mathematics courses were A+.
-            </p>
+              Note: The courses shown are selected examples highlighting my academic strength in Mathematics, not a complete list of all Mathematics-related courses completed.</p>
 
             <div className="pt-1">
               <Link to="/academic-evidence" className="link-arrow text-xs">

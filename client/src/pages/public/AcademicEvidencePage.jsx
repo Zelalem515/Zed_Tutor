@@ -316,7 +316,7 @@ export default function AcademicEvidencePage() {
             ))}
           </div>
           <p className="text-[11px] text-slate-400 italic">
-            Note: Discrete Mathematics received an A grade. Not all university mathematics courses were A+.
+            Note: The Mathematics courses shown are selected examples of my academic performance and do not represent the complete list of Mathematics-related courses I have completed.
           </p>
         </div>
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Monitor, Code2, Globe, Cpu, CheckCircle, ArrowRight } from 'lucide-react';
+import { BookOpen, Monitor, Code2, Globe, Cpu, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const CATEGORY_ICONS = {
   'Mathematics':             BookOpen,
@@ -30,7 +31,9 @@ const FALLBACK_SUBJECTS = [
 ];
 
 export default function TutoringOverview({ subjects }) {
-  const displaySubjects = subjects && subjects.length > 0 ? subjects : FALLBACK_SUBJECTS;
+  const { t, isAmharic, localizeSubject } = useLanguage();
+  const rawSubjects = subjects && subjects.length > 0 ? subjects : FALLBACK_SUBJECTS;
+  const displaySubjects = isAmharic ? rawSubjects.map(localizeSubject) : rawSubjects;
 
   return (
     <section className="py-20 lg:py-24 bg-slate-50 border-b border-slate-100">
@@ -41,18 +44,17 @@ export default function TutoringOverview({ subjects }) {
           <div className="max-w-2xl space-y-3">
             <div className="section-label">
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Grades 5–12</span>
+              <span>{t('tutoringOverview.sectionLabel', null, 'Grades 5–12')}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-navy-950" style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}>
-              What I Teach
+              {t('tutoringOverview.title', null, 'What I Teach')}
             </h2>
             <p className="text-slate-600 text-base leading-relaxed">
-              Each subject is structured around the Ethiopian national curriculum and extended with
-              practical application to build real understanding — not just exam results.
+              {t('tutoringOverview.description', null, 'Each subject is structured around the Ethiopian national curriculum and extended with practical application to build real understanding — not just exam results.')}
             </p>
           </div>
           <Link to="/tutoring" className="link-arrow flex-shrink-0">
-            <span>Full curriculum details</span>
+            <span>{t('tutoringOverview.curriculumDetails', null, 'Full curriculum details')}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -60,8 +62,9 @@ export default function TutoringOverview({ subjects }) {
         {/* Subject cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {displaySubjects.map((sub) => {
-            const Icon   = CATEGORY_ICONS[sub.category]   || BookOpen;
-            const accent = CATEGORY_ACCENTS[sub.category] || CATEGORY_ACCENTS['Other'];
+            const rawCat = sub._originalCategory || sub.category;
+            const Icon   = CATEGORY_ICONS[rawCat] || CATEGORY_ICONS[sub.category] || BookOpen;
+            const accent = CATEGORY_ACCENTS[rawCat] || CATEGORY_ACCENTS[sub.category] || CATEGORY_ACCENTS['Other'];
             return (
               <div key={sub._id} className="card-hover hover-lift flex flex-col">
                 <div className="p-6 flex-1 space-y-4">
@@ -71,7 +74,7 @@ export default function TutoringOverview({ subjects }) {
                       <Icon className={`w-5 h-5 ${accent.iconColor}`} />
                     </div>
                     <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 whitespace-nowrap">
-                      {sub.gradeRange || 'Grades 5–12'}
+                      {sub.gradeRange || (isAmharic ? 'ከ5ኛ–12ኛ ክፍል' : 'Grades 5–12')}
                     </span>
                   </div>
 
@@ -100,9 +103,9 @@ export default function TutoringOverview({ subjects }) {
 
                 {/* Card footer */}
                 <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 rounded-b-2xl flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400 font-medium">Online & In-person</span>
+                  <span className="text-[11px] text-slate-400 font-medium">{t('tutoringOverview.onlineAndInPerson', null, 'Online & In-person')}</span>
                   <Link to="/contact#inquiry" className="link-arrow text-xs">
-                    Request Tutoring <ArrowRight className="w-3 h-3" />
+                    {t('tutoringOverview.requestTutoring', null, 'Request Tutoring')} <ArrowRight className="w-3 h-3" />
                   </Link>
                 </div>
               </div>

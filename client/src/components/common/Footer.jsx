@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GraduationCap, Mail, Send, ExternalLink, Lock, Award } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const LOGO_SRC = '/assets/branding/logo.png';
 
@@ -37,6 +38,7 @@ function telegramHref(value) {
 
 export default function Footer({ profile }) {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   const ci = profile?.contactInfo || {};
 
@@ -46,11 +48,6 @@ export default function Footer({ profile }) {
   const telegramChan = ci.telegram    || 'https://t.me/zed_tutor';
   const email        = ci.email       || 'zedtutorit@gmail.com';
   const portfolioUrl = profile?.itPortfolioUrl || 'https://zelalem-birhan.vercel.app/';
-
-  // Optional social — only rendered when non-empty; telegramBot is internal admin tooling
-  const instagram    = ci.instagram   || '';
-  const facebook     = ci.facebook    || '';
-  const youtube      = ci.youtube     || '';
 
   // Active social links from the managed socialLinks array
   const activeSocialLinks = (profile?.socialLinks || []).filter(l => l.isActive && l.url);
@@ -73,12 +70,11 @@ export default function Footer({ profile }) {
               </span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Professional, evidence-based academic tutoring in Mathematics, Computer/ICT, and Programming
-              for Grades 5–12 by Zelalem Birhan.
+              {t('footer.brandDesc')}
             </p>
             <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-navy-900 border border-navy-700/60 text-xs text-gold-400 font-medium">
               <Award className="w-4 h-4 text-gold-500" />
-              <span>University Gold Medalist • 3.95 CGPA</span>
+              <span>{t('footer.goldBadge')}</span>
             </div>
 
             {/* ── Social links row — driven by managed socialLinks array ── */}
@@ -103,16 +99,18 @@ export default function Footer({ profile }) {
 
           {/* ── Quick Navigation ── */}
           <div>
-            <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">Explore</h4>
+            <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
+              {t('footer.exploreHeading')}
+            </h4>
             <ul className="space-y-2.5 text-sm">
               {[
-                { label: 'Home Overview',              to: '/' },
-                { label: 'About & Bio',                to: '/about' },
-                { label: 'Academic Journey',           to: '/academic-journey' },
-                { label: 'Verified Academic Evidence', to: '/academic-evidence' },
-                { label: 'Certificates & Awards',      to: '/certificates' },
-                { label: 'Tutoring — Grades 5–12',     to: '/tutoring' },
-                { label: 'Testimonials',               to: '/testimonials' },
+                { label: t('footer.linkHome'),         to: '/' },
+                { label: t('footer.linkAbout'),        to: '/about' },
+                { label: t('footer.linkJourney'),      to: '/academic-journey' },
+                { label: t('footer.linkEvidence'),     to: '/academic-evidence' },
+                { label: t('footer.linkCertificates'), to: '/certificates' },
+                { label: t('footer.linkTutoring'),     to: '/tutoring' },
+                { label: t('footer.linkTestimonials'), to: '/testimonials' },
               ].map(({ label, to }) => (
                 <li key={to}>
                   <Link to={to} className="text-slate-400 hover:text-white transition-colors">
@@ -125,16 +123,18 @@ export default function Footer({ profile }) {
 
           {/* ── Core Tutoring Areas ── */}
           <div>
-            <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">Core Tutoring Areas</h4>
+            <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
+              {t('footer.tutoringAreasHeading')}
+            </h4>
             <ul className="space-y-2.5 text-sm text-slate-400">
               {[
-                'Mathematics (Grades 5–12)',
-                'Computer / ICT Digital Literacy',
-                'Programming Fundamentals',
-                'Web Development',
-                'General Practical Computing',
-              ].map((item) => (
-                <li key={item} className="flex items-center space-x-2">
+                t('footer.area1'),
+                t('footer.area2'),
+                t('footer.area3'),
+                t('footer.area4'),
+                t('footer.area5'),
+              ].map((item, idx) => (
+                <li key={idx} className="flex items-center space-x-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-academic-500 flex-shrink-0" />
                   <span>{item}</span>
                 </li>
@@ -144,10 +144,12 @@ export default function Footer({ profile }) {
 
           {/* ── Direct Contact ── */}
           <div>
-            <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">Direct Contact</h4>
+            <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
+              {t('footer.contactHeading')}
+            </h4>
             <ul className="space-y-3 text-sm">
 
-              {/* WhatsApp — always shown (required contact method) */}
+              {/* WhatsApp — always shown */}
               <li>
                 <a href={waHref} target="_blank" rel="noopener noreferrer"
                   className="flex items-center space-x-2.5 text-slate-300 hover:text-emerald-400 transition-colors"
@@ -168,12 +170,10 @@ export default function Footer({ profile }) {
                     <span className="w-7 h-7 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-400 flex-shrink-0">
                       <Send className="w-3.5 h-3.5" />
                     </span>
-                    <span>Telegram Channel</span>
+                    <span>{t('footer.telegramChannel')}</span>
                   </a>
                 </li>
               )}
-
-              {/* Telegram bot is internal admin tooling — not shown publicly */}
 
               {/* Email */}
               {email && (
@@ -198,7 +198,7 @@ export default function Footer({ profile }) {
                     <span className="w-7 h-7 rounded-lg bg-academic-500/10 flex items-center justify-center text-academic-400 flex-shrink-0">
                       <ExternalLink className="w-3.5 h-3.5" />
                     </span>
-                    <span>Explore My IT Portfolio</span>
+                    <span>{t('footer.explorePortfolio')}</span>
                   </a>
                 </li>
               )}
@@ -209,11 +209,11 @@ export default function Footer({ profile }) {
         {/* ── Bottom Bar ── */}
         <div className="mt-12 pt-8 border-t border-navy-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
           <p>
-            © {currentYear} ZED_Tutor • Zelalem Birhan. All rights reserved. Evidence-based academic tutoring.
+            {t('footer.copyright', { year: currentYear })}
           </p>
           <div className="flex items-center space-x-4">
             <Link to="/contact" className="hover:text-slate-300 transition-colors">
-              Inquiries
+              {t('footer.inquiries')}
             </Link>
             <span>•</span>
             <Link
@@ -222,7 +222,7 @@ export default function Footer({ profile }) {
               title="Admin Portal"
             >
               <Lock className="w-3 h-3" />
-              <span>Admin</span>
+              <span>{t('footer.admin')}</span>
             </Link>
           </div>
         </div>

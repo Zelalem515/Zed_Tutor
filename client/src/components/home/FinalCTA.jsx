@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Mail, Send } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function FinalCTA({ profile }) {
+  const { t, isAmharic } = useLanguage();
+
   const whatsapp = profile?.contactInfo?.whatsapp || '+251912692343';
   const telegram = profile?.contactInfo?.telegram || 'https://t.me/zed_tutor';
   const email    = profile?.contactInfo?.email    || 'zedtutorit@gmail.com';
@@ -12,31 +15,36 @@ export default function FinalCTA({ profile }) {
     ? telegram
     : `https://t.me/${telegram.replace(/^@/, '')}`;
 
+  const subjects = isAmharic
+    ? ['ሂሳብ', 'ኮምፒውተር / ICT', 'ፕሮግራሚንግ', 'ድረ-ገጽ ግንባታ', 'አጠቃላይ የኮምፒውተር ክህሎቶች']
+    : ['Mathematics', 'Computer / ICT', 'Programming', 'Web Development', 'General Computer Skills'];
+
   return (
     <section className="py-20 lg:py-28 bg-navy-950">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
 
         {/* Headline */}
         <div className="space-y-4">
-          <p className="text-gold-400 text-sm font-semibold tracking-widest uppercase">Ready to Start?</p>
+          <p className="text-gold-400 text-sm font-semibold tracking-widest uppercase">
+            {t('finalCta.badge', null, 'Ready to Start?')}
+          </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight" style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}>
-            Request Tutoring — No Account Required
+            {t('finalCta.title', null, 'Request Tutoring — No Account Required')}
           </h2>
           <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            Tell me your grade level, the subject you need help with, and your preferred schedule.
-            I will respond directly via phone or WhatsApp.
+            {t('finalCta.subtitle', null, 'Tell me your grade level, the subject you need help with, and your preferred schedule. I will respond directly via phone or WhatsApp.')}
           </p>
         </div>
 
         {/* Subject chips */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {['Mathematics', 'Computer / ICT', 'Programming', 'Web Development', 'General Computer Skills'].map(s => (
+          {subjects.map(s => (
             <span key={s} className="px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 bg-white/7 border border-white/10">
               {s}
             </span>
           ))}
           <span className="px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-400 bg-white/4 border border-white/8">
-            Grades 5–12
+            {isAmharic ? 'ከ5ኛ–12ኛ ክፍል' : 'Grades 5–12'}
           </span>
         </div>
 
@@ -47,7 +55,7 @@ export default function FinalCTA({ profile }) {
             className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-semibold text-[17px] text-navy-950 bg-gold-500 hover:bg-gold-400 shadow-gold hover:shadow-[0_6px_28px_rgba(245,181,27,0.40)] transition-all duration-200 active:scale-[0.98]"
             style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
           >
-            Request Tutoring
+            {t('finalCta.requestTutoring', null, 'Request Tutoring')}
             <ArrowRight className="w-5 h-5 text-navy-950" />
           </Link>
         </div>

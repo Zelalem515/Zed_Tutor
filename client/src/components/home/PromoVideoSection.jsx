@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Play, ArrowRight, Video } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 function buildEmbedUrl(platform, embedId) {
   if (!embedId) return null;
@@ -10,7 +11,7 @@ function buildEmbedUrl(platform, embedId) {
 }
 
 export default function PromoVideoSection({ videos }) {
-  // Render a tasteful placeholder when no videos are active
+  const { t, isAmharic } = useLanguage();
   const hasVideos  = videos && videos.length > 0;
   const primary    = hasVideos ? videos[0] : null;
   const additional = hasVideos ? videos.slice(1, 4) : [];
@@ -25,19 +26,18 @@ export default function PromoVideoSection({ videos }) {
           <div className="space-y-3">
             <div className="section-label">
               <Video className="w-3.5 h-3.5" />
-              <span>Introduction</span>
+              <span>{t('promoVideo.sectionLabel', null, 'Introduction')}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-navy-950" style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}>
-              Meet Your Tutor
+              {t('promoVideo.title', null, 'Meet Your Tutor')}
             </h2>
             <p className="text-slate-600 text-base leading-relaxed max-w-lg">
-              A short video introduction to Zelalem's academic background, teaching philosophy,
-              and what you can expect from tutoring sessions.
+              {t('promoVideo.description', null, "A short video introduction to Zelalem's academic background, teaching philosophy, and what you can expect from tutoring sessions.")}
             </p>
           </div>
           {hasVideos && videos.length > 1 && (
             <Link to="/videos" className="link-arrow flex-shrink-0">
-              <span>All videos</span>
+              <span>{t('promoVideo.allVideos', null, 'All videos')}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           )}
@@ -65,7 +65,7 @@ export default function PromoVideoSection({ videos }) {
                       <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
                         <Play className="w-7 h-7 text-white ml-1" />
                       </div>
-                      <p className="text-sm text-slate-400">Video not available</p>
+                      <p className="text-sm text-slate-400">{t('promoVideo.videoNotAvailable', null, 'Video not available')}</p>
                     </div>
                   )}
                 </div>
@@ -107,27 +107,27 @@ export default function PromoVideoSection({ videos }) {
                 ))}
                 {videos.length > 4 && (
                   <Link to="/videos" className="block text-center text-xs font-semibold text-academic-600 hover:text-academic-700 py-2 transition-colors">
-                    +{videos.length - 4} more video{videos.length - 4 !== 1 ? 's' : ''}
+                    +{videos.length - 4} {isAmharic ? 'ተጨማሪ ቪዲዮዎች' : 'more videos'}
                   </Link>
                 )}
               </div>
             )}
           </div>
         ) : (
-          /* Elegant empty state — no broken UI */
+          /* Elegant empty state — matching production screenshot */
           <div className="max-w-2xl mx-auto">
             <div className="card p-12 text-center space-y-4 border-dashed">
               <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center mx-auto">
                 <Play className="w-7 h-7 text-slate-300" />
               </div>
               <div>
-                <p className="text-base font-semibold text-slate-600">Introduction video coming soon</p>
+                <p className="text-base font-semibold text-slate-600">{t('promoVideo.comingSoonTitle', null, 'Introduction video coming soon')}</p>
                 <p className="text-sm text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
-                  A short introductory video is being prepared and will appear here.
+                  {t('promoVideo.comingSoonDesc', null, 'A short introductory video is being prepared and will appear here.')}
                 </p>
               </div>
               <Link to="/about" className="link-arrow justify-center">
-                Learn about Zelalem <ArrowRight className="w-3.5 h-3.5" />
+                {t('promoVideo.learnAbout', null, 'Learn about Zelalem')} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>

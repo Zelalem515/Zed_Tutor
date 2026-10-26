@@ -4,6 +4,7 @@ import {
   Award, Download, Eye, FileText, X, ExternalLink,
   ShieldCheck, ChevronDown, AlertCircle
 } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 // Category colour map — used on filter pills and card badges
 const CATEGORY_STYLES = {
@@ -19,16 +20,18 @@ const ALL_PILL = 'bg-slate-100 text-slate-700 border-slate-200';
 const ALL_ACTIVE = 'bg-navy-900 text-white border-navy-900';
 
 function CategoryBadge({ category }) {
+  const { localizeCategory } = useLanguage();
   const styles = CATEGORY_STYLES[category] || CATEGORY_STYLES['Other'];
   return (
     <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wide ${styles.pill}`}>
-      {category}
+      {localizeCategory(category)}
     </span>
   );
 }
 
 // ── Preview Modal ─────────────────────────────────────────────────────────────
 function PreviewModal({ cert, onClose }) {
+  const { t } = useLanguage();
   const hasRealFile = cert.fileUrl && cert.fileUrl !== '#' && cert.fileUrl !== '';
   const isPDF = cert.fileType === 'pdf' ||
     (cert.fileUrl && cert.fileUrl.toLowerCase().endsWith('.pdf'));
@@ -54,7 +57,7 @@ function PreviewModal({ cert, onClose }) {
         <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-slate-100 flex-shrink-0">
           <div className="min-w-0">
             <CategoryBadge category={cert.category} />
-            <h3 className="text-lg font-bold text-navy-950 mt-2 leading-snug">{cert.title}</h3>
+            <h3 className="text-lg font-bold text-navy-950 mt-2 leading-snug font-heading">{cert.title}</h3>
             <p className="text-xs font-medium text-academic-600 mt-0.5">{cert.issuingOrg}</p>
             {cert.issueDate && (
               <p className="text-xs text-slate-400 mt-0.5">{cert.issueDate}</p>
@@ -109,14 +112,16 @@ function PreviewModal({ cert, onClose }) {
                 <FileText className="w-8 h-8 text-academic-400" />
               </div>
               <div className="text-center space-y-1">
-                <p className="text-sm font-semibold text-slate-600">Document not yet uploaded</p>
+                <p className="text-sm font-semibold text-slate-600">
+                  {t('certificatesPage.modalDocNotUploaded', null, 'Document not yet uploaded')}
+                </p>
                 <p className="text-xs text-slate-400 max-w-xs leading-relaxed">
-                  Actual certificates and official documents will be uploaded through the admin portal.
+                  {t('certificatesPage.modalDocNotUploadedDesc', null, 'Actual certificates and official documents will be uploaded through the admin portal.')}
                 </p>
               </div>
               <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-100">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Document is verified — upload pending</span>
+                <span>{t('certificatesPage.modalDocVerifiedPending', null, 'Document is verified — upload pending')}</span>
               </div>
             </div>
           )}
@@ -135,7 +140,7 @@ function PreviewModal({ cert, onClose }) {
             onClick={onClose}
             className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            Close
+            {t('certificatesPage.modalClose', null, 'Close')}
           </button>
           {hasRealFile && (
             <a
@@ -145,23 +150,23 @@ function PreviewModal({ cert, onClose }) {
               className="inline-flex items-center space-x-1.5 px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span>Open in New Tab</span>
+              <span>{t('certificatesPage.modalOpenNewTab', null, 'Open in New Tab')}</span>
             </a>
           )}
           {cert.isDownloadable && (
             <a
               href={cert.fileUrl && cert.fileUrl !== '#' ? cert.fileUrl : undefined}
-              download={cert.fileUrl && cert.fileUrl !== '#' ? undefined : undefined}
+              download={cert.fileUrl && cert.fileUrl !== '#' ? true : undefined}
               onClick={cert.fileUrl === '#' || !cert.fileUrl ? (e) => e.preventDefault() : undefined}
               className={`inline-flex items-center space-x-1.5 px-5 py-2 text-xs font-bold rounded-lg transition-colors ${
                 cert.fileUrl && cert.fileUrl !== '#'
                   ? 'text-white bg-navy-900 hover:bg-navy-800 cursor-pointer'
                   : 'text-slate-400 bg-slate-100 cursor-not-allowed'
               }`}
-              title={cert.fileUrl === '#' || !cert.fileUrl ? 'Document not yet available' : 'Download certificate'}
+              title={cert.fileUrl === '#' || !cert.fileUrl ? (t('certificatesPage.notAvailableYet', null, 'Document not yet available')) : 'Download certificate'}
             >
               <Download className={`w-3.5 h-3.5 ${cert.fileUrl && cert.fileUrl !== '#' ? 'text-gold-400' : 'text-slate-400'}`} />
-              <span>{cert.fileUrl && cert.fileUrl !== '#' ? 'Download' : 'Not Available Yet'}</span>
+              <span>{cert.fileUrl && cert.fileUrl !== '#' ? t('certificatesPage.downloadBtn', null, 'Download') : t('certificatesPage.notAvailableYet', null, 'Not Available Yet')}</span>
             </a>
           )}
         </div>
@@ -172,6 +177,7 @@ function PreviewModal({ cert, onClose }) {
 
 // ── Certificate Card ──────────────────────────────────────────────────────────
 function CertCard({ cert, onPreview }) {
+  const { t } = useLanguage();
   const hasRealFile = cert.fileUrl && cert.fileUrl !== '#' && cert.fileUrl !== '';
 
   return (
@@ -204,7 +210,7 @@ function CertCard({ cert, onPreview }) {
 
       {/* Content */}
       <div className="p-5 flex flex-col flex-1">
-        <h3 className="text-base font-bold text-navy-950 leading-snug mb-1">{cert.title}</h3>
+        <h3 className="text-base font-bold text-navy-950 leading-snug mb-1 font-heading">{cert.title}</h3>
         <p className="text-xs font-semibold text-academic-600 mb-1">{cert.issuingOrg}</p>
         {cert.issueDate && (
           <p className="text-[11px] text-slate-400 mb-3">{cert.issueDate}</p>
@@ -220,7 +226,7 @@ function CertCard({ cert, onPreview }) {
             className="flex-1 inline-flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>Preview</span>
+            <span>{t('certificatesPage.previewBtn', null, 'Preview')}</span>
           </button>
 
           {cert.isDownloadable ? (
@@ -236,7 +242,7 @@ function CertCard({ cert, onPreview }) {
               title={hasRealFile ? 'Download certificate' : 'Document not yet uploaded'}
             >
               <Download className={`w-3.5 h-3.5 ${hasRealFile ? 'text-gold-400' : 'text-slate-400'}`} />
-              <span>{hasRealFile ? 'Download' : 'Pending'}</span>
+              <span>{hasRealFile ? t('certificatesPage.downloadBtn', null, 'Download') : t('certificatesPage.pendingBtn', null, 'Pending')}</span>
             </a>
           ) : null}
         </div>
@@ -247,6 +253,7 @@ function CertCard({ cert, onPreview }) {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function CertificatesPage() {
+  const { t, localizeCategory } = useLanguage();
   const [certificates, setCertificates] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [previewCert, setPreviewCert] = useState(null);
@@ -280,14 +287,13 @@ export default function CertificatesPage() {
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-academic-100 text-academic-700 text-xs font-bold uppercase tracking-wider">
             <Award className="w-3.5 h-3.5" />
-            <span>Public Credentials</span>
+            <span>{t('certificatesPage.badge', null, 'Public Credentials')}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight">
-            Certificates & Official Awards
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight font-heading">
+            {t('certificatesPage.title', null, 'Certificates & Official Awards')}
           </h1>
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-            Downloadable, verifiable academic credentials and awards from Debre Tabor University
-            and national assessment bodies.
+            {t('certificatesPage.subtitle', null, 'Downloadable, verifiable academic credentials and awards from Debre Tabor University and national assessment bodies.')}
           </p>
         </div>
 
@@ -295,12 +301,12 @@ export default function CertificatesPage() {
         <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-slate-500">
           <div className="inline-flex items-center space-x-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Verified Academic Records</span>
+            <span>{t('certificatesPage.trustRecord', null, 'Verified Academic Records')}</span>
           </div>
           <span className="text-slate-300 hidden sm:inline">•</span>
           <div className="inline-flex items-center space-x-1.5">
             <Award className="w-4 h-4 text-gold-500" />
-            <span>University Gold Medalist • 3.95 CGPA</span>
+            <span>{t('certificatesPage.trustMedal', null, 'University Gold Medalist • 3.95 CGPA')}</span>
           </div>
         </div>
 
@@ -317,13 +323,14 @@ export default function CertificatesPage() {
               cls = isAll ? ALL_PILL : CATEGORY_STYLES[cat]?.pill || ALL_PILL;
               cls += ' hover:opacity-80';
             }
+            const label = isAll ? t('certificatesPage.allCategories', null, 'All') : localizeCategory(cat);
             return (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={`${base} ${cls}`}
               >
-                {cat}
+                {label}
                 {cat !== 'All' && (
                   <span className="ml-1.5 text-[10px] opacity-70">
                     ({certificates.filter(c => c.category === cat).length})
@@ -344,7 +351,7 @@ export default function CertificatesPage() {
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-3 text-slate-400">
             <Award className="w-12 h-12" />
-            <p className="text-sm font-semibold">No certificates in this category yet.</p>
+            <p className="text-sm font-semibold">{t('certificatesPage.noCertificates', null, 'No certificates in this category yet.')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -358,8 +365,7 @@ export default function CertificatesPage() {
         <div className="flex items-start gap-3 p-4 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-500 leading-relaxed">
           <ShieldCheck className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
           <span>
-            Certificates are publicly accessible and free to download. Documents containing unnecessary personal identifiers
-            or private contact information are not published. Actual certificate files will be uploaded through the admin portal.
+            {t('certificatesPage.privacyNotice', null, 'Certificates are publicly accessible and free to download. Documents containing unnecessary personal identifiers or private contact information are not published. Actual certificate files will be uploaded through the admin portal.')}
           </span>
         </div>
       </div>

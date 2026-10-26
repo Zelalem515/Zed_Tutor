@@ -737,7 +737,7 @@ export default function AdminProfilePage() {
                             maxLength={100}
                             value={ci.location || ''}
                             onChange={e => set('contactInfo.location', e.target.value)}
-                            placeholder="Addis Ababa, Ethiopia" />
+                            placeholder="Addis Ababa, Bole Arabsa" />
                         </div>
                         {ci.location && (
                           <button type="button" onClick={() => set('contactInfo.location', '')}
@@ -746,7 +746,7 @@ export default function AdminProfilePage() {
                           </button>
                         )}
                       </div>
-                      <p className={hintCls}>City/area for tutoring. Shown in the footer and in the in-person option on the contact form. Current: Addis Ababa, Ethiopia.</p>
+                      <p className={hintCls}>City/area for tutoring. Shown in the footer and in the in-person option on the contact form. Current: Addis Ababa, Bole Arabsa (In-person tutoring is available within Addis Ababa only).</p>
                     </div>
 
                   </div>

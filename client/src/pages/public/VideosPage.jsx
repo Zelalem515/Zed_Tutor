@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../../api/client';
 import { Play, Video as VideoIcon, ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 // ── Safe embed URL builder — only YouTube and Vimeo allowed ──────────────────
 function buildEmbedUrl(platform, embedId) {
@@ -13,6 +14,7 @@ function buildEmbedUrl(platform, embedId) {
 
 // ── Single video card ────────────────────────────────────────────────────────
 function VideoCard({ vid }) {
+  const { t } = useLanguage();
   const embedUrl = buildEmbedUrl(vid.platform, vid.embedId);
 
   return (
@@ -46,10 +48,10 @@ function VideoCard({ vid }) {
             {vid.platform}
           </span>
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Promotional Video
+            {t('videosPage.cardTag', null, 'Promotional Video')}
           </span>
         </div>
-        <h3 className="text-base font-bold text-navy-950 leading-snug">{vid.title}</h3>
+        <h3 className="text-base font-bold text-navy-950 leading-snug font-heading">{vid.title}</h3>
         {vid.description && (
           <p className="text-xs text-slate-600 leading-relaxed flex-1">{vid.description}</p>
         )}
@@ -60,6 +62,7 @@ function VideoCard({ vid }) {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function VideosPage() {
+  const { t } = useLanguage();
   const [videos,  setVideos]  = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -81,14 +84,13 @@ export default function VideosPage() {
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-academic-100 text-academic-700 text-xs font-bold uppercase tracking-wider">
             <VideoIcon className="w-3.5 h-3.5" />
-            <span>Promotional Media</span>
+            <span>{t('videosPage.badge', null, 'Promotional Media')}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight">
-            Promotional & Introductory Videos
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight font-heading">
+            {t('videosPage.title', null, 'Promotional & Introductory Videos')}
           </h1>
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-            Short introductory videos about ZED_Tutor — the academic background, tutoring approach,
-            and what students and parents can expect.
+            {t('videosPage.subtitle', null, 'Short introductory videos about ZED_Tutor — the academic background, tutoring approach, and what students and parents can expect.')}
           </p>
         </div>
 
@@ -113,23 +115,22 @@ export default function VideosPage() {
             <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto">
               <Play className="w-8 h-8 text-slate-400" />
             </div>
-            <h3 className="text-lg font-bold text-navy-950">Promotional Videos Coming Soon</h3>
+            <h3 className="text-lg font-bold text-navy-950 font-heading">{t('videosPage.emptyTitle', null, 'Promotional Videos Coming Soon')}</h3>
             <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
-              Introductory and overview videos are being prepared and will be available here soon.
-              In the meantime, explore the academic evidence and tutoring subjects.
+              {t('videosPage.emptySubtitle', null, 'Introductory and overview videos are being prepared and will be available here soon. In the meantime, explore the academic evidence and tutoring subjects.')}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <Link
                 to="/about"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-academic-600 bg-academic-50 border border-academic-100 hover:bg-academic-100 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-academic-600 bg-academic-50 border border-academic-100 hover:bg-academic-100 transition-colors font-heading"
               >
-                About Zelalem
+                {t('videosPage.aboutBtn', null, 'About Zelalem')}
               </Link>
               <Link
                 to="/tutoring"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-navy-900 hover:bg-navy-800 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-navy-900 hover:bg-navy-800 transition-colors font-heading"
               >
-                View Tutoring Areas
+                {t('videosPage.tutoringBtn', null, 'View Tutoring Areas')}
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -149,14 +150,14 @@ export default function VideosPage() {
         {!loading && videos.length > 0 && (
           <div className="bg-gradient-to-r from-navy-950 to-navy-900 rounded-2xl p-7 text-white flex flex-col sm:flex-row items-center justify-between gap-5 shadow-lg border border-navy-800">
             <div className="space-y-1 text-center sm:text-left">
-              <h3 className="text-lg font-bold">Ready to start tutoring?</h3>
-              <p className="text-sm text-slate-300">Send a request — no account needed.</p>
+              <h3 className="text-lg font-bold font-heading">{t('videosPage.ctaTitle', null, 'Ready to start tutoring?')}</h3>
+              <p className="text-sm text-slate-300">{t('videosPage.ctaSubtitle', null, 'Send a request — no account needed.')}</p>
             </div>
             <Link
               to="/contact#inquiry"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-navy-950 bg-gold-400 hover:bg-gold-500 transition-colors shadow-md flex-shrink-0"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-navy-950 bg-gold-400 hover:bg-gold-500 transition-colors shadow-md flex-shrink-0 font-heading"
             >
-              <span>Request Tutoring</span>
+              <span>{t('videosPage.ctaBtn', null, 'Request Tutoring')}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

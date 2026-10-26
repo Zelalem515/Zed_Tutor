@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../../api/client';
 import { GraduationCap, Award, BookOpen, Code2, Cpu, Sparkles, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function AcademicJourneyPage() {
+  const { t } = useLanguage();
   const [academic, setAcademic] = useState(null);
 
   useEffect(() => {
@@ -14,7 +16,7 @@ export default function AcademicJourneyPage() {
     load();
   }, []);
 
-  const steps = [
+  const defaultSteps = [
     {
       step: '01',
       period: 'Secondary School Foundation',
@@ -77,6 +79,14 @@ export default function AcademicJourneyPage() {
     }
   ];
 
+  const icons = [GraduationCap, BookOpen, Code2, Cpu, Award, Sparkles];
+  const translatedSteps = t('academicJourney.steps', null, defaultSteps);
+  const stepsData = Array.isArray(translatedSteps) ? translatedSteps : defaultSteps;
+
+  const defaultFlow = ['Grade 12 Exam', 'GIT Admission', 'BSc IT Studies', 'Final-Year Projects', 'Gold Medal (3.95)', 'ZED_Tutor'];
+  const flowSteps = t('academicJourney.flow', null, defaultFlow);
+  const flowList = Array.isArray(flowSteps) ? flowSteps : defaultFlow;
+
   return (
     <div className="py-16 bg-slate-50 min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -85,53 +95,36 @@ export default function AcademicJourneyPage() {
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-academic-100 text-academic-700 text-xs font-bold uppercase tracking-wider">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>High-Level Academic Timeline</span>
+            <span>{t('academicJourney.badge', null, 'High-Level Academic Timeline')}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight">
-            My Academic Journey
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight font-heading">
+            {t('academicJourney.title', null, 'My Academic Journey')}
           </h1>
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-            A high-level progression from early national examination distinction to university top rank, system engineering, and dedicated tutoring.
+            {t('academicJourney.subtitle', null, 'A high-level progression from early national examination distinction to university top rank, system engineering, and dedicated tutoring.')}
           </p>
         </div>
 
         {/* Quick Progression Flow Banner */}
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hidden md:flex items-center justify-between text-xs font-semibold text-slate-700">
-          <div className="flex items-center space-x-2">
-            <span className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold">1</span>
-            <span>Grade 12 Exam</span>
-          </div>
-          <ArrowRight className="w-4 h-4 text-slate-300" />
-          <div className="flex items-center space-x-2">
-            <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold">2</span>
-            <span>GIT Admission</span>
-          </div>
-          <ArrowRight className="w-4 h-4 text-slate-300" />
-          <div className="flex items-center space-x-2">
-            <span className="w-7 h-7 rounded-lg bg-academic-100 text-academic-700 flex items-center justify-center font-bold">3</span>
-            <span>BSc IT Studies</span>
-          </div>
-          <ArrowRight className="w-4 h-4 text-slate-300" />
-          <div className="flex items-center space-x-2">
-            <span className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">4</span>
-            <span>Final-Year Projects</span>
-          </div>
-          <ArrowRight className="w-4 h-4 text-slate-300" />
-          <div className="flex items-center space-x-2">
-            <span className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold">5</span>
-            <span>Gold Medal (3.95)</span>
-          </div>
-          <ArrowRight className="w-4 h-4 text-slate-300" />
-          <div className="flex items-center space-x-2">
-            <span className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">6</span>
-            <span>ZED_Tutor</span>
-          </div>
+          {flowList.map((stepText, idx) => (
+            <React.Fragment key={idx}>
+              <div className="flex items-center space-x-2">
+                <span className="w-7 h-7 rounded-lg bg-academic-100 text-academic-700 flex items-center justify-center font-bold">
+                  {idx + 1}
+                </span>
+                <span>{stepText}</span>
+              </div>
+              {idx < flowList.length - 1 && <ArrowRight className="w-4 h-4 text-slate-300" />}
+            </React.Fragment>
+          ))}
         </div>
 
         {/* High-Level Timeline */}
         <div className="relative border-l-2 border-academic-200 ml-4 sm:ml-8 pl-6 sm:pl-10 space-y-10 py-2">
-          {steps.map((item, idx) => {
-            const Icon = item.icon;
+          {stepsData.map((item, idx) => {
+            const Icon = icons[idx] || Award;
+            const stepNum = item.step || `0${idx + 1}`;
             return (
               <div key={idx} className="relative group">
                 {/* Node icon */}
@@ -143,14 +136,14 @@ export default function AcademicJourneyPage() {
                 <div className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm hover:shadow-md transition-all space-y-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-xs font-bold text-academic-600 uppercase tracking-wider px-3 py-1 rounded-full bg-academic-50 border border-academic-100">
-                      Phase {item.step} • {item.period}
+                      Phase {stepNum} • {item.period}
                     </span>
                     <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
                       {item.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-xl sm:text-2xl font-bold text-navy-950">
+                  <h3 className="text-xl sm:text-2xl font-bold text-navy-950 font-heading">
                     {item.title}
                   </h3>
                   <p className="text-xs font-semibold text-slate-500">
@@ -169,24 +162,26 @@ export default function AcademicJourneyPage() {
         {/* Credibility Callout */}
         <div className="bg-gradient-to-r from-navy-950 to-navy-900 rounded-2xl p-8 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-800">
           <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-2xl font-bold">Inspect the Verified Evidence</h3>
+            <h3 className="text-2xl font-bold font-heading">
+              {t('academicJourney.calloutTitle', null, 'Inspect the Verified Evidence')}
+            </h3>
             <p className="text-slate-300 text-sm max-w-xl">
-              Every milestone is verified through university records, official convocation awards, and national examination certificates.
+              {t('academicJourney.calloutSubtitle', null, 'Every milestone is verified through university records, official convocation awards, and national examination certificates.')}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Link
               to="/academic-evidence"
-              className="px-5 py-3 rounded-xl font-bold text-xs text-navy-950 bg-gold-400 hover:bg-gold-500 transition-colors shadow-sm flex items-center space-x-1.5"
+              className="px-5 py-3 rounded-xl font-bold text-xs text-navy-950 bg-gold-400 hover:bg-gold-500 transition-colors shadow-sm flex items-center space-x-1.5 font-heading"
             >
-              <span>View Academic Evidence</span>
+              <span>{t('academicJourney.evidenceBtn', null, 'View Academic Evidence')}</span>
               <ArrowRight className="w-4 h-4 text-navy-950" />
             </Link>
             <Link
               to="/certificates"
-              className="px-5 py-3 rounded-xl font-bold text-xs text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors"
+              className="px-5 py-3 rounded-xl font-bold text-xs text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors font-heading"
             >
-              <span>Download Certificates</span>
+              <span>{t('academicJourney.certBtn', null, 'Download Certificates')}</span>
             </Link>
           </div>
         </div>

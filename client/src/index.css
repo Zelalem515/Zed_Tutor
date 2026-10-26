@@ -18,12 +18,35 @@
     selection-background-color: #2563EB;
   }
 
-  /* Headings use Plus Jakarta Sans */
+  /* Headings use Plus Jakarta Sans and Noto Sans Ethiopic fallback */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Ethiopic', 'Inter', system-ui, sans-serif;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: #08142E;
+  }
+
+  /* Amharic specific adjustments */
+  html[lang="am"] body,
+  body.font-amharic {
+    font-family: 'Noto Sans Ethiopic', 'Inter', system-ui, sans-serif;
+  }
+
+  html[lang="am"] h1,
+  html[lang="am"] h2,
+  html[lang="am"] h3,
+  html[lang="am"] h4,
+  html[lang="am"] h5,
+  html[lang="am"] h6,
+  body.font-amharic h1,
+  body.font-amharic h2,
+  body.font-amharic h3,
+  body.font-amharic h4,
+  body.font-amharic h5,
+  body.font-amharic h6 {
+    font-family: 'Noto Sans Ethiopic', 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    letter-spacing: normal;
+    line-height: 1.35;
   }
 
   /* Smooth focus rings */

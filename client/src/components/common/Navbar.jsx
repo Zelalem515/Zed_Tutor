@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { GraduationCap, Menu, X, ArrowRight } from 'lucide-react';
+import { GraduationCap, Menu, X, ArrowRight, Globe } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const LOGO_SRC = '/assets/branding/logo.png';
 
@@ -28,10 +29,46 @@ function BrandLogo() {
   );
 }
 
+function LanguageSelector({ className = '' }) {
+  const { language, setLanguage } = useLanguage();
+
+  return (
+    <div className={`inline-flex items-center p-1 rounded-xl bg-slate-100/90 border border-slate-200/80 ${className}`}>
+      <button
+        type="button"
+        onClick={() => setLanguage('en')}
+        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-150 ${
+          language === 'en'
+            ? 'bg-white text-navy-950 shadow-sm'
+            : 'text-slate-500 hover:text-slate-800'
+        }`}
+        aria-label="Switch to English"
+        aria-pressed={language === 'en'}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        onClick={() => setLanguage('am')}
+        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all duration-150 ${
+          language === 'am'
+            ? 'bg-academic-600 text-white shadow-sm'
+            : 'text-slate-500 hover:text-slate-800'
+        }`}
+        aria-label="ወደ አማርኛ ቀይር"
+        aria-pressed={language === 'am'}
+      >
+        አማ
+      </button>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const [isOpen, setIsOpen]         = useState(false);
   const [scrolled, setScrolled]     = useState(false);
   const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
 
   // Close mobile menu on route change
   useEffect(() => { setIsOpen(false); }, [location.pathname]);
@@ -44,17 +81,17 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Home',              path: '/' },
-    { name: 'About',             path: '/about' },
-    { name: 'Academic Evidence', path: '/academic-evidence' },
-    { name: 'Tutoring',          path: '/tutoring' },
-    { name: 'Certificates',      path: '/certificates' },
-    { name: 'Testimonials',      path: '/testimonials' },
-    { name: 'Contact',           path: '/contact' },
+    { name: t('nav.home'),              path: '/' },
+    { name: t('nav.about'),             path: '/about' },
+    { name: t('nav.academicEvidence'),  path: '/academic-evidence' },
+    { name: t('nav.tutoring'),          path: '/tutoring' },
+    { name: t('nav.certificates'),      path: '/certificates' },
+    { name: t('nav.testimonials'),      path: '/testimonials' },
+    { name: t('nav.contact'),           path: '/contact' },
   ];
 
   const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
+    if (path === '/') return location.pathname === '/' || location.pathname === '';
     return location.pathname.startsWith(path);
   };
 
@@ -75,18 +112,18 @@ export default function Navbar() {
                 ZED<span className="text-academic-500">_Tutor</span>
               </span>
               <span className="text-[11px] font-medium text-slate-400 block tracking-wide mt-0.5">
-                Zelalem Birhan
+                {t('nav.brandSubtitle')}
               </span>
             </div>
           </Link>
 
           {/* ── Desktop nav ── */}
-          <div className="hidden lg:flex items-center gap-0.5">
+          <div className="hidden xl:flex items-center gap-0.5">
             {navLinks.map((link) => (
               <Link
-                key={link.name}
+                key={link.path}
                 to={link.path}
-                className={`relative px-3.5 py-2 rounded-lg text-[13.5px] font-medium transition-all duration-150 ${
+                className={`relative px-3 py-2 rounded-lg text-[13.5px] font-medium transition-all duration-150 whitespace-nowrap ${
                   isActive(link.path)
                     ? 'text-academic-600 bg-academic-50 font-semibold'
                     : 'text-slate-600 hover:text-academic-600 hover:bg-[#EFF6FF]'
@@ -100,36 +137,72 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* ── Desktop CTA ── */}
-          <div className="hidden md:flex items-center">
+          {/* ── Desktop language switcher & CTA ── */}
+          <div className="hidden lg:flex items-center gap-3">
+            <LanguageSelector />
             <Link
               to="/contact#inquiry"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-navy-900 hover:bg-navy-800 shadow-sm hover:shadow-card-md transition-all duration-200 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-navy-900 hover:bg-navy-800 shadow-sm hover:shadow-card-md transition-all duration-200 active:scale-[0.98] whitespace-nowrap"
               style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}
             >
-              Request Tutoring
-              <ArrowRight className="w-4 h-4 text-gold-400" />
+              <span>{t('nav.requestTutoring')}</span>
+              <ArrowRight className="w-4 h-4 text-gold-400 flex-shrink-0" />
             </Link>
           </div>
 
-          {/* ── Mobile toggle ── */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex lg:hidden p-2.5 rounded-lg text-slate-600 hover:text-navy-900 hover:bg-slate-50 transition-colors"
-            aria-label={isOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={isOpen}
-          >
-            {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* ── Mobile language & menu toggle ── */}
+          <div className="flex lg:hidden items-center gap-2">
+            <LanguageSelector />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2.5 rounded-lg text-slate-600 hover:text-navy-900 hover:bg-slate-50 transition-colors"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isOpen}
+            >
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ── Mobile drawer ── */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-100 px-4 py-3 pb-5 space-y-0.5 shadow-lg">
+        <div className="lg:hidden bg-white border-t border-slate-100 px-4 py-3 pb-5 space-y-1 shadow-lg max-h-[calc(100vh-70px)] overflow-y-auto">
+          {/* Mobile Language Pill Bar */}
+          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 mb-2">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+              <Globe className="w-4 h-4 text-academic-500" />
+              <span>{t('nav.language')}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                  language === 'en'
+                    ? 'bg-navy-900 text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('am')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                  language === 'am'
+                    ? 'bg-academic-600 text-white shadow-xs'
+                    : 'bg-white text-slate-600 border border-slate-200'
+                }`}
+              >
+                አማርኛ
+              </button>
+            </div>
+          </div>
+
           {navLinks.map((link) => (
             <Link
-              key={link.name}
+              key={link.path}
               to={link.path}
               className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                 isActive(link.path)
@@ -145,7 +218,7 @@ export default function Navbar() {
               to="/contact#inquiry"
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold text-white bg-navy-900 hover:bg-navy-800 shadow-sm transition-colors"
             >
-              Request Tutoring
+              <span>{t('nav.requestTutoring')}</span>
               <ArrowRight className="w-4 h-4 text-gold-400" />
             </Link>
           </div>

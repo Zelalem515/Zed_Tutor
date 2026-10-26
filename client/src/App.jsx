@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -93,10 +94,12 @@ function AppLayout() {
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <AppLayout />
-      </Router>
+      <LanguageProvider>
+        <Router>
+          <ScrollToTop />
+          <AppLayout />
+        </Router>
+      </LanguageProvider>
     </AuthProvider>
   );
 }

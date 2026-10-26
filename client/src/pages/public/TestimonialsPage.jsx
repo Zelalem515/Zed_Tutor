@@ -5,6 +5,7 @@ import {
   CheckCircle2, ThumbsUp, Pin, ArrowRight, X, Quote
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 
 const RELATIONSHIPS = [
   'Lecturer', 'Academic Advisor', 'Project Supervisor', 'Classmate',
@@ -22,6 +23,7 @@ const EMPTY_FORM = {
 
 // ── Helpful button with optimistic update ────────────────────────────────────
 function HelpfulButton({ testimonialId, initialCount }) {
+  const { t } = useLanguage();
   const [count, setCount]     = useState(initialCount || 0);
   const [voted, setVoted]     = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,7 @@ function HelpfulButton({ testimonialId, initialCount }) {
     <button
       onClick={handleClick}
       disabled={voted || loading}
-      title={voted ? 'Already marked as helpful' : 'Mark as helpful'}
+      title={voted ? (t('testimonialsPage.helpfulVoted', null, 'Already marked as helpful')) : (t('testimonialsPage.helpful', null, 'Helpful'))}
       className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg border transition-colors ${
         voted
           ? 'bg-academic-50 border-academic-200 text-academic-600 cursor-default'
@@ -55,13 +57,14 @@ function HelpfulButton({ testimonialId, initialCount }) {
       }`}
     >
       <ThumbsUp className="w-3 h-3" />
-      <span>Helpful{count > 0 ? ` (${count})` : ''}</span>
+      <span>{t('testimonialsPage.helpful', null, 'Helpful')}{count > 0 ? ` (${count})` : ''}</span>
     </button>
   );
 }
 
 // ── Single testimonial card ───────────────────────────────────────────────────
-function TestimonialCard({ t, featured = false }) {
+function TestimonialCard({ t: testi, featured = false }) {
+  const { t, localizeRelationship } = useLanguage();
   return (
     <div className={`bg-white rounded-2xl border flex flex-col ${
       featured
@@ -73,7 +76,7 @@ function TestimonialCard({ t, featured = false }) {
         <div className="px-5 pt-4 pb-0">
           <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-academic-700 bg-academic-50 border border-academic-200 px-2.5 py-1 rounded-full">
             <Pin className="w-3 h-3" />
-            Featured
+            {t('testimonialsPage.cardFeatured', null, 'Featured')}
           </span>
         </div>
       )}
@@ -84,12 +87,12 @@ function TestimonialCard({ t, featured = false }) {
           <Quote className="w-6 h-6 text-academic-300 flex-shrink-0 mt-0.5" />
           <div className="flex flex-wrap items-center gap-2 ml-auto">
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 uppercase tracking-wide">
-              {t.relationship}
+              {localizeRelationship(testi.relationship)}
             </span>
-            {t.isVerifiedWitness && (
+            {testi.isVerifiedWitness && (
               <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                 <ShieldCheck className="w-3 h-3" />
-                Verified Witness
+                {t('testimonialsPage.cardVerified', null, 'Verified Witness')}
               </span>
             )}
           </div>
@@ -97,23 +100,23 @@ function TestimonialCard({ t, featured = false }) {
 
         {/* Message */}
         <p className="text-sm text-slate-700 leading-relaxed flex-1 italic">
-          "{t.message}"
+          "{testi.message}"
         </p>
 
         {/* Author + helpful */}
         <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-9 h-9 rounded-full bg-academic-100 text-academic-700 font-bold flex items-center justify-center text-sm flex-shrink-0">
-              {t.authorName?.charAt(0)?.toUpperCase() || 'A'}
+              {testi.authorName?.charAt(0)?.toUpperCase() || 'A'}
             </div>
             <div className="min-w-0">
-              <h4 className="text-xs font-bold text-navy-950 truncate">{t.authorName}</h4>
-              {t.organization && (
-                <p className="text-[11px] text-slate-500 truncate">{t.organization}</p>
+              <h4 className="text-xs font-bold text-navy-950 truncate font-heading">{testi.authorName}</h4>
+              {testi.organization && (
+                <p className="text-[11px] text-slate-500 truncate">{testi.organization}</p>
               )}
             </div>
           </div>
-          <HelpfulButton testimonialId={t._id} initialCount={t.helpfulCount || 0} />
+          <HelpfulButton testimonialId={testi._id} initialCount={testi.helpfulCount || 0} />
         </div>
       </div>
     </div>
@@ -122,6 +125,7 @@ function TestimonialCard({ t, featured = false }) {
 
 // ── Submission modal ──────────────────────────────────────────────────────────
 function SubmitModal({ onClose }) {
+  const { t, localizeRelationship } = useLanguage();
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [status,   setStatus]   = useState(null);
   const [busy,     setBusy]     = useState(false);
@@ -144,13 +148,13 @@ function SubmitModal({ onClose }) {
     try {
       const res = await api.submitTestimonial(payload);
       if (res?.success) {
-        setStatus({ type: 'success', text: res.message || 'Thank you! Your testimonial will appear after admin review.' });
+        setStatus({ type: 'success', text: res.message || t('testimonialsPage.formSuccess', null, 'Thank you! Your testimonial will appear after admin review.') });
         setFormData(EMPTY_FORM);
       } else {
-        setStatus({ type: 'error', text: res?.message || 'Submission failed. Please check required fields.' });
+        setStatus({ type: 'error', text: res?.message || t('testimonialsPage.formError', null, 'Submission failed. Please check required fields.') });
       }
     } catch {
-      setStatus({ type: 'error', text: 'Unexpected error. Please try again.' });
+      setStatus({ type: 'error', text: t('testimonialsPage.formError', null, 'Unexpected error. Please try again.') });
     } finally {
       setBusy(false);
     }
@@ -169,9 +173,9 @@ function SubmitModal({ onClose }) {
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-5 border-b border-slate-100 flex-shrink-0">
           <div>
-            <h3 className="text-lg font-bold text-navy-950">Submit a Testimonial</h3>
+            <h3 className="text-lg font-bold text-navy-950 font-heading">{t('testimonialsPage.modalTitle', null, 'Submit a Testimonial')}</h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Share your genuine experience. Submissions are reviewed before publishing.
+              {t('testimonialsPage.modalSubtitle', null, 'Share your genuine experience. Submissions are reviewed before publishing.')}
             </p>
           </div>
           <button onClick={onClose} className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" aria-label="Close">
@@ -201,56 +205,55 @@ function SubmitModal({ onClose }) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className={labelCls}>Your Full Name *</label>
+              <label className={labelCls}>{t('testimonialsPage.formNameLabel', null, 'Your Full Name *')}</label>
               <input type="text" required maxLength={100}
                 value={formData.authorName} onChange={e => set('authorName', e.target.value)}
-                className={inputCls} placeholder="e.g. Dr. Abebe Kebede" />
+                className={inputCls} placeholder={t('testimonialsPage.formNamePlaceholder', null, 'e.g. Dr. Abebe Kebede')} />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className={labelCls}>Relationship to Zelalem *</label>
+                <label className={labelCls}>{t('testimonialsPage.formRelLabel', null, 'Relationship to Zelalem *')}</label>
                 <select value={formData.relationship} onChange={e => set('relationship', e.target.value)} className={inputCls}>
-                  {RELATIONSHIPS.map(r => <option key={r} value={r}>{r}</option>)}
+                  {RELATIONSHIPS.map(r => <option key={r} value={r}>{localizeRelationship(r)}</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Organisation / Institution</label>
+                <label className={labelCls}>{t('testimonialsPage.formOrgLabel', null, 'Organisation / Institution')}</label>
                 <input type="text" maxLength={120}
                   value={formData.organization} onChange={e => set('organization', e.target.value)}
-                  className={inputCls} placeholder="e.g. Debre Tabor University" />
+                  className={inputCls} placeholder={t('testimonialsPage.formOrgPlaceholder', null, 'e.g. Debre Tabor University')} />
               </div>
             </div>
 
             <div>
-              <label className={labelCls}>Testimonial Message * <span className="text-slate-400 font-normal">(max 1500 chars)</span></label>
+              <label className={labelCls}>{t('testimonialsPage.formMsgLabel', null, 'Testimonial Message * (max 1500 chars)')}</label>
               <textarea required rows={4} maxLength={1500}
                 value={formData.message} onChange={e => set('message', e.target.value)}
                 className={`${inputCls} resize-none`}
-                placeholder="Describe Zelalem's academic character, teaching approach, or the impact of working with him…" />
+                placeholder={t('testimonialsPage.formMsgPlaceholder', null, "Describe Zelalem's academic character, teaching approach, or the impact of working with him…")} />
               <p className="text-[11px] text-slate-400 mt-1 text-right">{formData.message.length} / 1500</p>
             </div>
 
             <div>
-              <label className={labelCls}>Email <span className="text-slate-400 font-normal">(optional — private, not shown publicly)</span></label>
+              <label className={labelCls}>{t('testimonialsPage.formEmailLabel', null, 'Email (optional — private, not shown publicly)')}</label>
               <input type="email" maxLength={100}
                 value={formData.email} onChange={e => set('email', e.target.value)}
-                className={inputCls} placeholder="contact@example.com" />
+                className={inputCls} placeholder={t('testimonialsPage.formEmailPlaceholder', null, 'contact@example.com')} />
             </div>
 
             <p className="text-[11px] text-slate-400 italic leading-relaxed">
-              All submissions enter a pending moderation state and are reviewed for authenticity before appearing publicly.
-              Your email, if provided, is private and never displayed.
+              {t('testimonialsPage.formNote', null, 'All submissions enter a pending moderation state and are reviewed for authenticity before appearing publicly. Your email, if provided, is private and never displayed.')}
             </p>
 
             <div className="flex justify-end gap-3 pt-1">
               <button type="button" onClick={onClose}
                 className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
-                Cancel
+                {t('testimonialsPage.formCancel', null, 'Cancel')}
               </button>
               <button type="submit" disabled={busy}
-                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-navy-900 hover:bg-navy-800 disabled:opacity-60 rounded-xl shadow-sm transition-colors">
-                <span>{busy ? 'Submitting…' : 'Submit Testimonial'}</span>
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-navy-900 hover:bg-navy-800 disabled:opacity-60 rounded-xl shadow-sm transition-colors font-heading">
+                <span>{busy ? t('testimonialsPage.formSubmitting', null, 'Submitting…') : t('testimonialsPage.formSubmit', null, 'Submit Testimonial')}</span>
                 <Send className="w-4 h-4 text-gold-400" />
               </button>
             </div>
@@ -263,6 +266,7 @@ function SubmitModal({ onClose }) {
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function TestimonialsPage() {
+  const { t } = useLanguage();
   const [testimonials, setTestimonials] = useState([]);
   const [loading,      setLoading]      = useState(true);
   const [showModal,    setShowModal]    = useState(false);
@@ -291,14 +295,13 @@ export default function TestimonialsPage() {
         <div className="text-center max-w-2xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-academic-100 text-academic-700 text-xs font-bold uppercase tracking-wider">
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>Community & Academic Endorsements</span>
+            <span>{t('testimonialsPage.badge', null, 'Community & Academic Endorsements')}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight">
-            Testimonials & References
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-navy-950 tracking-tight font-heading">
+            {t('testimonialsPage.title', null, 'Testimonials & References')}
           </h1>
           <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
-            Genuine statements from university lecturers, supervisors, academic peers, and students.
-            Each submission is individually reviewed before appearing here.
+            {t('testimonialsPage.subtitle', null, 'Genuine statements from university lecturers, supervisors, academic peers, and students. Each submission is individually reviewed before appearing here.')}
           </p>
 
           {/* Stats strip */}
@@ -306,18 +309,18 @@ export default function TestimonialsPage() {
             <div className="flex flex-wrap items-center justify-center gap-4 pt-1">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600">
                 <MessageSquare className="w-3.5 h-3.5 text-academic-500" />
-                {testimonials.length} published
+                {testimonials.length} {t('testimonialsPage.publishedLabel', null, 'published')}
               </span>
               {verified > 0 && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  {verified} verified witness{verified !== 1 ? 'es' : ''}
+                  {verified} {t('testimonialsPage.verifiedWitnessesLabel', null, 'verified witnesses')}
                 </span>
               )}
               {pinned.length > 0 && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-academic-600">
                   <Star className="w-3.5 h-3.5" />
-                  {pinned.length} featured
+                  {pinned.length} {t('testimonialsPage.featuredLabel', null, 'featured')}
                 </span>
               )}
             </div>
@@ -326,10 +329,10 @@ export default function TestimonialsPage() {
           <div className="pt-2">
             <button
               onClick={() => setShowModal(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-navy-900 hover:bg-navy-800 transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-navy-900 hover:bg-navy-800 transition-colors shadow-sm font-heading"
             >
               <Plus className="w-4 h-4 text-gold-400" />
-              Submit a Testimonial
+              {t('testimonialsPage.submitBtn', null, 'Submit a Testimonial')}
             </button>
           </div>
         </div>
@@ -347,16 +350,16 @@ export default function TestimonialsPage() {
         {!loading && testimonials.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 space-y-4 text-slate-400">
             <MessageSquare className="w-12 h-12" />
-            <p className="text-base font-semibold text-slate-600">No testimonials yet.</p>
+            <p className="text-base font-semibold text-slate-600">{t('testimonialsPage.emptyTitle', null, 'No testimonials yet.')}</p>
             <p className="text-sm text-center max-w-sm">
-              Be the first to share your experience. Submissions are reviewed before appearing here.
+              {t('testimonialsPage.emptySubtitle', null, 'Be the first to share your experience. Submissions are reviewed before appearing here.')}
             </p>
             <button
               onClick={() => setShowModal(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-navy-900 hover:bg-navy-800 transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-navy-900 hover:bg-navy-800 transition-colors font-heading"
             >
               <Plus className="w-4 h-4 text-gold-400" />
-              Submit a Testimonial
+              {t('testimonialsPage.submitBtn', null, 'Submit a Testimonial')}
             </button>
           </div>
         )}
@@ -366,15 +369,15 @@ export default function TestimonialsPage() {
           <section className="space-y-5">
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-slate-200" />
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-academic-700 uppercase tracking-widest">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-academic-700 uppercase tracking-widest font-heading">
                 <Star className="w-3.5 h-3.5" />
-                Featured Testimonials
+                {t('testimonialsPage.featuredHeading', null, 'Featured Testimonials')}
               </span>
               <div className="h-px flex-1 bg-slate-200" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {pinned.map(t => (
-                <TestimonialCard key={t._id} t={t} featured />
+              {pinned.map(testi => (
+                <TestimonialCard key={testi._id} t={testi} featured />
               ))}
             </div>
           </section>
@@ -386,13 +389,13 @@ export default function TestimonialsPage() {
             {pinned.length > 0 && (
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-slate-200" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">All Testimonials</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest font-heading">{t('testimonialsPage.allHeading', null, 'All Testimonials')}</span>
                 <div className="h-px flex-1 bg-slate-200" />
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {regular.map(t => (
-                <TestimonialCard key={t._id} t={t} />
+              {regular.map(testi => (
+                <TestimonialCard key={testi._id} t={testi} />
               ))}
             </div>
           </section>
@@ -403,8 +406,7 @@ export default function TestimonialsPage() {
           <div className="flex items-start gap-3 p-5 rounded-2xl bg-emerald-50 border border-emerald-100">
             <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-emerald-800 leading-relaxed">
-              <strong>Verified Witness</strong> badges are assigned manually by Zelalem after confirming
-              the person's identity and relationship. They are not awarded automatically.
+              {t('testimonialsPage.verifiedExplanation', null, "Verified Witness badges are assigned manually by Zelalem after confirming the person's identity and relationship. They are not awarded automatically.")}
             </div>
           </div>
         )}
@@ -412,14 +414,14 @@ export default function TestimonialsPage() {
         {/* ── CTA ── */}
         <div className="bg-gradient-to-r from-navy-950 to-navy-900 rounded-2xl p-7 sm:p-9 text-white flex flex-col sm:flex-row items-center justify-between gap-5 shadow-lg border border-navy-800">
           <div className="space-y-1 text-center sm:text-left">
-            <h3 className="text-lg font-bold">Interested in Tutoring?</h3>
-            <p className="text-sm text-slate-300">Send a tutoring inquiry and Zelalem will respond directly.</p>
+            <h3 className="text-lg font-bold font-heading">{t('testimonialsPage.ctaTitle', null, 'Interested in Tutoring?')}</h3>
+            <p className="text-sm text-slate-300">{t('testimonialsPage.ctaSubtitle', null, 'Send a tutoring inquiry and Zelalem will respond directly.')}</p>
           </div>
           <Link
             to="/contact#inquiry"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-navy-950 bg-gold-400 hover:bg-gold-500 transition-colors shadow-md flex-shrink-0"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-navy-950 bg-gold-400 hover:bg-gold-500 transition-colors shadow-md flex-shrink-0 font-heading"
           >
-            <span>Request Tutoring</span>
+            <span>{t('testimonialsPage.ctaBtn', null, 'Request Tutoring')}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

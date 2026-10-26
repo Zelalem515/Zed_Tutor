@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, ArrowRight, Pin, MessageSquare } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function TestimonialsSection({ testimonials }) {
+  const { t, isAmharic, localizeRelationship } = useLanguage();
+
   if (!testimonials || testimonials.length === 0) return null;
 
   const preview = testimonials.slice(0, 3);
@@ -16,35 +19,34 @@ export default function TestimonialsSection({ testimonials }) {
           <div className="space-y-3">
             <div className="section-label">
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>Community Endorsements</span>
+              <span>{t('testimonialsSection.badge', null, 'Community Endorsements')}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-navy-950" style={{ fontFamily: "'Plus Jakarta Sans', Inter, sans-serif" }}>
-              What People Say
+              {t('testimonialsSection.title', null, 'What People Say')}
             </h2>
             <p className="text-slate-600 text-base leading-relaxed max-w-xl">
-              Genuine statements from university lecturers, supervisors, academic peers, and students —
-              reviewed individually before publication.
+              {t('testimonialsSection.subtitle', null, 'Genuine statements from university lecturers, supervisors, academic peers, and students — reviewed individually before publication.')}
             </p>
           </div>
           <Link to="/testimonials" className="link-arrow flex-shrink-0">
-            All testimonials <ArrowRight className="w-4 h-4" />
+            {isAmharic ? 'ሁሉንም ምስክርነቶች ይመልከቱ' : 'All testimonials'} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {preview.map(t => (
+          {preview.map(item => (
             <div
-              key={t._id}
+              key={item._id}
               className={`card-hover flex flex-col ${
-                t.isPinned ? 'ring-1 ring-academic-200 border-academic-200 shadow-card-md' : ''
+                item.isPinned ? 'ring-1 ring-academic-200 border-academic-200 shadow-card-md' : ''
               }`}
             >
-              {t.isPinned && (
+              {item.isPinned && (
                 <div className="px-5 pt-4 pb-0">
                   <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-academic-600 bg-academic-50 border border-academic-100 px-2.5 py-1 rounded-full">
                     <Pin className="w-2.5 h-2.5" />
-                    Featured
+                    {isAmharic ? 'ተመራጭ' : 'Featured'}
                   </span>
                 </div>
               )}
@@ -53,33 +55,33 @@ export default function TestimonialsSection({ testimonials }) {
                 {/* Top row: relationship + verified badge */}
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                   <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 uppercase tracking-wide">
-                    {t.relationship}
+                    {localizeRelationship(item.relationship)}
                   </span>
-                  {t.isVerifiedWitness && (
+                  {item.isVerifiedWitness && (
                     <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
                       <ShieldCheck className="w-3 h-3" />
-                      Verified
+                      {isAmharic ? 'የተረጋገጠ' : 'Verified'}
                     </span>
                   )}
                 </div>
 
-                {/* Quote — opening mark is decorative, not semantic */}
+                {/* Quote */}
                 <div className="flex-1">
                   <p className="text-slate-600 text-sm leading-relaxed line-clamp-4">
                     <span className="text-academic-200 text-2xl font-black leading-none mr-1 align-top">"</span>
-                    {t.message}
+                    {item.message}
                   </p>
                 </div>
 
                 {/* Author */}
                 <div className="pt-3 border-t border-slate-100 flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-academic-100 text-academic-700 font-bold flex items-center justify-center text-xs flex-shrink-0">
-                    {t.authorName?.charAt(0)?.toUpperCase() || 'A'}
+                    {item.authorName?.charAt(0)?.toUpperCase() || 'A'}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-navy-950 truncate">{t.authorName}</p>
-                    {t.organization && (
-                      <p className="text-[11px] text-slate-400 truncate">{t.organization}</p>
+                    <p className="text-xs font-semibold text-navy-950 truncate">{item.authorName}</p>
+                    {item.organization && (
+                      <p className="text-[11px] text-slate-400 truncate">{item.organization}</p>
                     )}
                   </div>
                 </div>
@@ -93,7 +95,7 @@ export default function TestimonialsSection({ testimonials }) {
           <div className="text-center">
             <Link to="/testimonials" className="btn-secondary inline-flex">
               <MessageSquare className="w-4 h-4 text-academic-500" />
-              View All {testimonials.length} Testimonials
+              {isAmharic ? `ሁሉንም ${testimonials.length} ምስክርነቶች ይመልከቱ` : `View All ${testimonials.length} Testimonials`}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

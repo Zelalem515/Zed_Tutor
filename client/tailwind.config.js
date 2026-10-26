@@ -49,8 +49,9 @@ export default {
         },
       },
       fontFamily: {
-        heading: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
-        sans:    ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        heading: ['"Plus Jakarta Sans"', '"Noto Sans Ethiopic"', 'Inter', 'system-ui', 'sans-serif'],
+        sans:    ['Inter', '"Noto Sans Ethiopic"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        ethiopic: ['"Noto Sans Ethiopic"', 'sans-serif'],
       },
       fontSize: {
         // Refined type scale

@@ -74,7 +74,7 @@ export default function Hero({ profile, academic }) {
                 <>
                   Empowering learners in{' '}
                   <strong className="text-white font-semibold">Grades 5–12</strong> to build deep conceptual understanding, logical reasoning, and practical problem-solving in{' '}
-                  <strong className="text-white font-semibold">Mathematics, ICT, Programming, and Web Development</strong>.
+                  <strong className="text-white font-semibold">Mathematics, ICT,Artificial Intelligence (AI), Programming, and Web Development</strong>.
                 </>
               )}
             </p>

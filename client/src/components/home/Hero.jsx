@@ -68,7 +68,7 @@ export default function Hero({ profile, academic }) {
             <p className="animate-fade-in-up delay-200 text-slate-300 text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
               {isAmharic ? (
                 <>
-                  ከ <strong className="text-white font-semibold">5ኛ–12ኛ ክፍል</strong> ላሉ ተማሪዎች በ <strong className="text-white font-semibold">ሂሳብ፣ ICT፣ ፕሮግራሚንግ እና ዌብ ዲቨሎፕመንት</strong> ጥልቅ የፅንሰ-ሃሳብ ግንዛቤን፣ አመክንዮአዊ አስተሳሰብንና የተግባር ችግር ፈቺ ክህሎትን ማጎልበት።
+                  ከ <strong className="text-white font-semibold">5ኛ–12ኛ ክፍል</strong> ላሉ ተማሪዎች በ <strong className="text-white font-semibold">ሂሳብ፣ ICT፣ ሰውሰራሽ አስተውሎት (AI)፣ ፕሮግራሚንግ እና ዌብ ዲቨሎፕመንት</strong> ጥልቅ የፅንሰ-ሃሳብ ግንዛቤን፣ አመክንዮአዊ አስተሳሰብንና የተግባር ችግር ፈቺ ክህሎትን ማጎልበት።
                 </>
               ) : (
                 <>
